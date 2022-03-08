@@ -27,13 +27,16 @@ function useRequestDelay(delayTime = 1000, initialData = []) {
     })();
   }, []);
 
-  function updatedRecord(recordUpdated) {
+  function updatedRecord(recordUpdated, doneCallback) {
     const newRecords = data.map(function (rec) {
       return rec.id === recordUpdated.id ? recordUpdated : rec;
     });
     (async () => {
       try {
-        await delay(250);
+        await delay(delayTime);
+        if (doneCallback) {
+          doneCallback();
+        }
         setData(newRecords);
       } catch (error) {
         console.log("there was an error", error);
