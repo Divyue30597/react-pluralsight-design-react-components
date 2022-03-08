@@ -318,3 +318,57 @@ function useRequestSpeakers(delayTime = 1000) {
 
 export default useRequestSpeakers;
 ```
+
+```javascript
+function updatedRecord(recordUpdated, doneCallback) {
+  const newRecords = data.map(function (rec) {
+    return rec.id === recordUpdated.id ? recordUpdated : rec;
+  });
+  (async () => {
+    try {
+      await delay(delayTime);
+      if (doneCallback) {
+        doneCallback();
+      }
+      setData(newRecords);
+    } catch (error) {
+      console.log("there was an error", error);
+    }
+  })();
+}
+```
+
+Most productive way in Implementing callback logic to handle things like completion events to start my implementation as close to the actual update of the component state values as I can get, that is in our user interface after the SpeakerFavorite icon is clicked and the 2‑second delay finishes. In our case, the 2‑second delay is in the updateRecord method in the requestDelay custom hook. So that's where we want to put and execute a callback function.
+
+```javascript
+function SpeakerFavorite({ favorite, onFavoriteToggle }) {
+  function doneCallback() {
+    console.log(
+      `In SpeakerFavorite:doneCallback ${new Date().getMilliseconds()}`
+    );
+  }
+
+  return (
+    <div className="action padB1">
+      <span
+        // the JavaScript expression we have assigned to onClick is the closure we've been looking for that includes the doneCallback.
+        onClick={() => {
+          onFavoriteToggle(doneCallback);
+        }}
+      >
+        <i
+          className={
+            favorite === true ? "fa fa-star orange" : "fa fa-star-o orange "
+          }
+        />
+        {"  "}
+        Favorite{"  "}
+      </span>
+    </div>
+  );
+}
+```
+
+**[Closure](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures)** : A closure is the combination of a function bundled together (enclosed) with references to its surrounding state (the lexical environment). In other words, a closure gives you access to an outer function's scope from an inner function. In JavaScript, closures are created every time a function is created, at function creation time.
+
+The question is how can we pass a reference to this function so we can execute it all the way to the updateRecord method in our custom hook? What we can do is we create a closure around onFavoriteToggle that we pass to the click event, and that closure passes to onFavoriteToggle our function doneCallback.
