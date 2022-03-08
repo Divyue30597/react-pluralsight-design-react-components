@@ -37,11 +37,14 @@ function SpeakersList({ showSessions }) {
                 speaker={speaker}
                 showSessions={showSessions}
                 // Maybe you noticed that when we created our click event back in our SpeakerFavorite component, we did not have access to the speaker's ID, which, in order to update the correct speaker in our speakers data state, we need. That is the only incoming property into our SpeakerFavorite component was the boolean value Favorite. However, now we are at the component hierarchy level where we are about to call our actual onFavoriteToggle function so we need to know which speaker ID needs its favorite value toggled. We do that by instead of assigning the function onFavoriteToggle to our local function onFavoriteToggle. We instead create a new anonymous function using lambda syntax. That takes no parameters in, then returns a call to onFavoriteToggle, passing in our current speaker.id associated with the instance of the created Speaker component.
-                onFavoriteToggle={() => {
-                  updatedRecord({
-                    ...speaker,
-                    favorite: !speaker.favorite,
-                  });
+                onFavoriteToggle={(doneCallback) => {
+                  updatedRecord(
+                    {
+                      ...speaker,
+                      favorite: !speaker.favorite,
+                    },
+                    doneCallback
+                  );
                 }}
               />
             );
