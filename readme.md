@@ -372,3 +372,36 @@ function SpeakerFavorite({ favorite, onFavoriteToggle }) {
 **[Closure](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures)** : A closure is the combination of a function bundled together (enclosed) with references to its surrounding state (the lexical environment). In other words, a closure gives you access to an outer function's scope from an inner function. In JavaScript, closures are created every time a function is created, at function creation time.
 
 The question is how can we pass a reference to this function so we can execute it all the way to the updateRecord method in our custom hook? What we can do is we create a closure around onFavoriteToggle that we pass to the click event, and that closure passes to onFavoriteToggle our function doneCallback.
+
+# React Context
+
+The React Context API is a main part of the React library and is designed to share data including functions from a component to all its descendant components. That is, all components, no matter how deeply nested, can share common data. The main benefit of React Context is that it provides a mechanism for sharing that data that does not involve passing information as props all the way down the component tree to where it's needed, but instead, allows you to reference that data directly at any level of the tree by essentially including a global reference to that particular context.
+
+You can think of React Context kind of as global data that you can instantiate at any level of a component hierarchy. Then, every level below that, in other words, all the children of that component and the children's children, so on and so on, have access to the global data you assigned to that particular context. One very powerful aspect of context is that you can have many contexts in an app that can overlap each other in the component tree.
+
+For example, in the app we built so far, we have two cases that do exactly this and benefit from using the React Context API. One case is managing our theme. Our theme value, light or dark, needs to be available to every rendering component in our app. Right now, we create local component state in our app component, then pass the value of our theme down the component hierarchy as props until it gets to the component that needs it.
+
+## Error on refactoring for the themeContext
+
+![themeContext-refer](./img/themeContext-refer-error.png)
+
+```javascript
+function LayoutNoThemeProvider({ startingTheme, children }) {
+  const { theme } = useContext(ThemeContext);
+  return (
+    // If we were to run this as is, we'd get an error pointing at line 6 saying something like Theme not defined. The reason for that is that we are trying to reference the ThemeContext before it's created by ThemeProvider. That is, ThemeProvider renders after our call to useContext, meaning it does not exist yet.
+    <ThemeProvider startingTheme={startingTheme}>
+      <div
+        className={
+          theme === "light" ? "container-  light" : "container-fluid dark"
+        }
+      >
+        {children}
+      </div>
+    </ThemeProvider>
+  );
+}
+```
+
+The above code will throw error. To solve that issue We create a new component called Layout and rename the existing one with LayoutNoThemeProvider. Then, we provide LayoutNoThemeProvider as component to Layout which has the themeProvider initialized. 
+
