@@ -6,10 +6,8 @@ import Speakers from "./Speakers";
 function App() {
   return (
     <Layout startingTheme="light">
-      <div>
-        <Header />
-        <Speakers />
-      </div>
+      <Header />
+      <Speakers />
     </Layout>
   );
 }

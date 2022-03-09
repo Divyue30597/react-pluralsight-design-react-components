@@ -403,5 +403,19 @@ function LayoutNoThemeProvider({ startingTheme, children }) {
 }
 ```
 
-The above code will throw error. To solve that issue We create a new component called Layout and rename the existing one with LayoutNoThemeProvider. Then, we provide LayoutNoThemeProvider as component to Layout which has the themeProvider initialized. 
+The above code will throw error. To solve that issue We create a new component called Layout and rename the existing one with LayoutNoThemeProvider. Then, we provide LayoutNoThemeProvider as component to Layout which has the themeProvider initialized.
 
+## Separating State Management from Our Theme Context with a Custom React Hook
+
+```javascript
+function ThemeProvider({ children, startingTheme }) {
+  const [theme, setTheme] = useState(startingTheme);
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+```
+
+One of the driving principles to reach for, is to always think about separation of concerns in the apps, and React is no exception. Looking here at our dedicated `ThemeContext` (refer above line no 412) we recently built, it only has one state variable in it, that is the theme itself and its associated setter. But you can imagine scenarios where your context not only has multiple state values, but also logic around those values, including things like state validation. **It often makes sense to separate all your React state logic into a separate component. Sound familiar? That's exactly what custom React hooks do.**

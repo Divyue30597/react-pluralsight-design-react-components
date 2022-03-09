@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import SpeakersList from "./SpeakersList";
 import SpeakersToolbar from "./SpeakersToolbar";
 
